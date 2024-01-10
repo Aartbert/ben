@@ -1,0 +1,8 @@
+Als vijand binnen 25 tegels is en hp is groter dan 35%, dan val vijand aan.
+Als vijand binnen 25 tegels is en hp is kleiner dan 35%, dan ren weg.
+Als hp onder 15% is, dan drink health potion.
+Als hp kleiner is dan 25% en health potion binnen 25 tegels is, dan pak health potion op.
+Als stamina boven 25% is en als hp onder 35% is, dan pak health potion op.
+Als stamina boven 25% is en item binnen 25 tegels is, dan pak item op.
+Als stamina boven 25% is, dan loop rond.
+Als stamina onder 25% is en hp onder 35% is, dan drink health potion.

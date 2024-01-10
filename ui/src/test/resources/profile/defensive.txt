@@ -1,0 +1,8 @@
+Als vijand binnen 20 tegels is en hp is groter dan 70%, dan val monster aan.
+Als vijand binnen 20 tegels is en hp is kleiner dan 70%, dan ren weg.
+Als hp minder is dan 70% en health potion binnen 15 tegels is, dan pak health potion op.
+Als hp onder 70% is, dan gebruik health potion.
+Als item binnen 15 tegels is, dan pak item op.
+Als stamina boven 35% is, dan loop rond.
+Als stamina onder 35% is en hp minder is dan 90%, dan gebruik health potion
+Als stamina onder 35% is en als item binnen 5 tegels is, dan pak item op.

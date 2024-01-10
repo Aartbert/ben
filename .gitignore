@@ -1,0 +1,49 @@
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+**/saves/
+**/*.tmp
+**/*.log
+**/*.script
+!**/application.properties
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+config.ini
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+**/.antlr/
+
+### Mac OS ###
+.DS_Store
+
+### Test ###
+.test
+
+### Generated folders ###
+**/target/
+**/gen/

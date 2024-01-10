@@ -1,0 +1,1 @@
+als hp minder is dan 10%, loop dan naar beneden.

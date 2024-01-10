@@ -1,0 +1,7 @@
+Als vijand binnen 15 tegels is en hp is groter dan 50%, dan val speler aan.
+Als vijand binnen 15 tegels is en hp kleiner dan 50%, dan ren weg.
+Als health potion binnen 15 tegels is en hp kleiner is dan 50%, dan pak health potion.
+Als item binnen 25 tegels is, dan pak item op.
+Als hp onder 50% is, dan gebruik health potion.
+Als hp boven 50% is en stamina boven 20%, dan loop rond.
+Als stamina onder 20% is en health onder 70%, dan gebruik health potion.
