@@ -18,6 +18,7 @@ public enum Key {
     F,
     Q,
     Z,
+    X,
     ESCAPE,
     UNKNOWN,
     EOF,

@@ -190,6 +190,7 @@ public class TerminalConsole {
             case 'f' -> Key.F;
             case 'q' -> Key.Q;
             case 'z' -> Key.Z;
+            case 'x' -> Key.X;
             default -> Key.UNKNOWN;
         };
     }

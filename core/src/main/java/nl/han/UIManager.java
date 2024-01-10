@@ -248,6 +248,15 @@ public class UIManager implements ISubmitListener, IKeyStrokeListener, IButtonCl
                 //TODO
             }
         }
+        if (key == Key.X) {
+            try {
+                InputStream inputStream = AudioManager.class.getClassLoader().getResourceAsStream("boom.wav");
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(inputStream);
+                gameManager.sendAudioInputStream(audioInputStream);
+            } catch (Exception e) {
+                //TODO
+            }
+        }
         return switch (key) {
             case W, ARROW_UP -> Action.MOVE_UP;
             case A, ARROW_LEFT -> Action.MOVE_LEFT;
