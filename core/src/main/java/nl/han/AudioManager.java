@@ -155,14 +155,11 @@ public class AudioManager {
     private void updateAudioPosition(Creature creature) {
         Clip clip = creature.getClip();
         if (clip.isOpen()) {
-            FloatControl balanceControl = (FloatControl) clip.getControl(FloatControl.Type.BALANCE);
-            balanceControl.setValue(calculateBalance(creature));
-
             FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             gainControl.setValue(calculateVolume(creature));
 
-            FloatControl panControl = (FloatControl) clip.getControl(FloatControl.Type.PAN);
-            panControl.setValue(calculatePanning(creature));
+            FloatControl balanceControl = (FloatControl) clip.getControl(FloatControl.Type.BALANCE);
+            balanceControl.setValue(calculateBalance(creature));
         }
     }
 
@@ -174,7 +171,7 @@ public class AudioManager {
         return volume;
     }
 
-    private float calculatePanning(Creature creature) {
+    private float calculateBalance(Creature creature) {
         int relativeX = creature.getCoordinate().x() - currentPlayer.getCoordinate().x();
         int relativeY = creature.getCoordinate().y() - currentPlayer.getCoordinate().y();
         double panning = mapValue(calculateAngleToCurrentPlayer(relativeX, relativeY), 0, 90, 1, 0);
@@ -183,7 +180,7 @@ public class AudioManager {
         else return 0;
     }
 
-    private float calculateBalance(Creature creature) {
+    private float calculateElevation(Creature creature) {
         int relativeX = creature.getCoordinate().x() - currentPlayer.getCoordinate().x();
         int relativeY = creature.getCoordinate().y() - currentPlayer.getCoordinate().y();
         double panning = mapValue(calculateAngleToCurrentPlayer(relativeX, relativeY), 0, 90, 0, 1);
