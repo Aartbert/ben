@@ -108,6 +108,7 @@ public class AudioManager {
         audioLine.close();
     }
 
+
     public static void main(String[] args) {
         try {
             AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);
@@ -154,6 +155,9 @@ public class AudioManager {
     private void updateAudioPosition(Creature creature) {
         Clip clip = creature.getClip();
         if (clip.isOpen()) {
+            FloatControl balanceControl = (FloatControl) clip.getControl(FloatControl.Type.BALANCE);
+            balanceControl.setValue(calculateBalance(creature));
+
             FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             gainControl.setValue(calculateVolume(creature));
 
@@ -173,18 +177,29 @@ public class AudioManager {
     private float calculatePanning(Creature creature) {
         int relativeX = creature.getCoordinate().x() - currentPlayer.getCoordinate().x();
         int relativeY = creature.getCoordinate().y() - currentPlayer.getCoordinate().y();
+        double panning = mapValue(calculateAngleToCurrentPlayer(relativeX, relativeY), 0, 90, 1, 0);
+        if (relativeX < 0) return (float) -panning;
+        if (relativeX > 0) return (float) panning;
+        else return 0;
+    }
 
+    private float calculateBalance(Creature creature) {
+        int relativeX = creature.getCoordinate().x() - currentPlayer.getCoordinate().x();
+        int relativeY = creature.getCoordinate().y() - currentPlayer.getCoordinate().y();
+        double panning = mapValue(calculateAngleToCurrentPlayer(relativeX, relativeY), 0, 90, 0, 1);
+        if (relativeY < 0) return (float) -panning;
+        if (relativeY > 0) return (float) panning;
+        else return 0;
+    }
+
+    private float calculateAngleToCurrentPlayer(int relativeX, int relativeY) {
         double angleFromXAxis = Math.atan2(relativeY, relativeX);
         double angleDegrees = Math.toDegrees(angleFromXAxis);
 
         double normalizedAngle = (angleDegrees + 360) % 360;
         if (normalizedAngle >= 180) normalizedAngle -= 180;
         if (normalizedAngle > 90) normalizedAngle = 180 - normalizedAngle;
-
-        double panning = mapValue(normalizedAngle, 0, 90, 1, 0);
-        if (relativeX < 0) return (float) -panning;
-        if (relativeX > 0) return (float) panning;
-        else return 0;
+        return (float) normalizedAngle;
     }
 
 

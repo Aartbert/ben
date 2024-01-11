@@ -278,7 +278,7 @@ public class GameManager extends GameLoop {
         if (tickCount % 10 == 0) {
             uiManager.updatePlayerList(game.getPlayers(), currentPlayer);
         }
-//        audioManager.updateAudio(tickCount);
+        audioManager.updateAudio(tickCount);
     }
 
     /**
