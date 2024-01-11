@@ -8,12 +8,12 @@ import nl.han.shared.datastructures.game.Game;
 import nl.han.shared.datastructures.world.Coordinate;
 import nl.han.shared.enums.BotType;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.*;
+import java.io.File;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.Scanner;
 
 import static nl.han.shared.datastructures.world.Chunk.CHUNK_HEIGHT;
 import static nl.han.shared.datastructures.world.Chunk.CHUNK_WIDTH;
@@ -24,6 +24,8 @@ public class AudioManager {
     private Random random;
     @Setter
     private Player currentPlayer;
+    private AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);;
+    private TargetDataLine audioLine;
 
     public AudioManager() {
         random = new Random();
@@ -65,6 +67,79 @@ public class AudioManager {
         }
     }
 
+    public void startAudioRecording() {
+        try {
+            DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
+            if (!AudioSystem.isLineSupported(info)) System.err.println("Line not supported");
+
+            audioLine = (TargetDataLine) AudioSystem.getLine(info);
+            audioLine.open();
+            audioLine.start();
+
+            Thread thread = new Thread(() -> {
+                try {
+                    AudioInputStream audioInputStream = new AudioInputStream(audioLine);
+                    File audioFile = new File("record.wav");
+                    AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, audioFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+            thread.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stopAudioRecording() {
+        audioLine.stop();
+        audioLine.close();
+    }
+
+    public static void main(String[] args) {
+        try {
+            AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);
+            DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
+            if (!AudioSystem.isLineSupported(info)) System.err.println("Line not supported");
+
+            TargetDataLine targetDataLine = (TargetDataLine) AudioSystem.getLine(info);
+            targetDataLine.open();
+
+            System.out.println("Started recording...");
+            targetDataLine.start();
+
+            Thread thread = new Thread(() -> {
+                try {
+                    AudioInputStream audioInputStream = new AudioInputStream(targetDataLine);
+                    File audioFile = new File("record.wav");
+                    AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, audioFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+
+            thread.start();
+            Thread.sleep(5000);
+            targetDataLine.stop();
+            targetDataLine.close();
+            System.out.println("Ended sound test");
+
+            Clip clip = AudioSystem.getClip();
+            clip.addLineListener(event -> {
+                if (event.getType() == LineEvent.Type.STOP) {
+                    clip.close();
+                }
+            });
+            clip.open(AudioSystem.getAudioInputStream(new File("record.wav")));
+            Scanner scanner = new Scanner(System.in);
+            clip.start();
+            scanner.nextLine();
+       } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void updateAudioPosition(Creature creature) {
         Clip clip = creature.getClip();
         if (clip.isOpen()) {
@@ -72,7 +147,6 @@ public class AudioManager {
             gainControl.setValue(calculateVolume(creature));
 
             FloatControl panControl = (FloatControl) clip.getControl(FloatControl.Type.PAN);
-            System.out.println(calculatePanning(creature));
             panControl.setValue(calculatePanning(creature));
         }
     }
@@ -110,5 +184,16 @@ public class AudioManager {
         double mappedValue = (normalizedValue * (newMax - newMin)) + newMin;
 
         return mappedValue;
+    }
+
+    public AudioInputStream getMostRecentRecording() {
+        try {
+            return AudioSystem.getAudioInputStream(new File("record.wav"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.err.println("No recent recording available.");
+        return null;
+
     }
 }

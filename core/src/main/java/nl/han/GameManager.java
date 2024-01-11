@@ -269,7 +269,7 @@ public class GameManager extends GameLoop {
         game.getMonsters().removeIf(monster -> monster.getHealth().getValue().intValue() <= 0);
         game.getPlayers().removeIf(player -> player.getHealth().getValue().intValue() <= 0);
         uiManager.update();
-        audioManager.updateAudio(tickCount);
+//        audioManager.updateAudio(tickCount);
         currentPlayer.increaseStamina(1);
 
         if (!nextActions.isEmpty()) {
@@ -896,5 +896,17 @@ public class GameManager extends GameLoop {
      */
     public Creature getAdjacentCreature(){
         return actionManager.getAdjacentCreature(allCreaturesInChunk());
+    }
+
+    public void startAudioRecording() {
+        audioManager.startAudioRecording();
+    }
+
+    public void stopAudioRecording() {
+        audioManager.stopAudioRecording();
+    }
+
+    public AudioInputStream getMostRecentRecording() {
+        return audioManager.getMostRecentRecording();
     }
 }

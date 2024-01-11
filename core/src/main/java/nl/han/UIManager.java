@@ -20,8 +20,12 @@ import nl.han.shared.datastructures.world.Coordinate;
 import nl.han.shared.datastructures.world.Tile;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
+
 import nl.han.shared.enums.*;
 
+import java.io.File;
 import java.io.InputStream;
 import java.awt.*;
 import java.util.ArrayList;
@@ -240,22 +244,30 @@ public class UIManager implements ISubmitListener, IKeyStrokeListener, IButtonCl
 
     private Action mapKeyToAction(Key key) {
         if (key == Key.Z) {
-            try {
-                InputStream inputStream = AudioManager.class.getClassLoader().getResourceAsStream("21.wav");
-                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(inputStream);
-                gameManager.sendAudioInputStream(audioInputStream);
-            } catch (Exception e) {
-                //TODO
-            }
+            gameManager.startAudioRecording();
+            System.out.println("start");
         }
         if (key == Key.X) {
+            gameManager.stopAudioRecording();
+            System.out.println("stop");
+        }
+        if (key == Key.P) {
             try {
-                InputStream inputStream = AudioManager.class.getClassLoader().getResourceAsStream("boom.wav");
-                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(inputStream);
-                gameManager.sendAudioInputStream(audioInputStream);
+                Clip clip = AudioSystem.getClip();
+                clip.addLineListener(event -> {
+                    if (event.getType() == LineEvent.Type.STOP) {
+                        clip.close();
+                    }
+                });
+                clip.open(gameManager.getMostRecentRecording());
+                clip.start();
+                System.out.println("play");
             } catch (Exception e) {
-                //TODO
+                e.printStackTrace();
             }
+
+            //TODO WHEN NETWORK IS WORKING PULL DEV, REMOVE THE CODE ABOVE AND UNCOMMENT THIS.
+//            gameManager.sendAudioInputStream(gameManager.getMostRecentRecording());
         }
         return switch (key) {
             case W, ARROW_UP -> Action.MOVE_UP;

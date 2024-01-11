@@ -21,8 +21,8 @@ import java.awt.*;
 @Getter
 @AllArgsConstructor
 public enum BotType {
-    ZOMBIE(30, 2, 10, 40, 'M', Color.WHITE, new Color(1, 80, 32), "boom.wav", 1, 50, Color.BLUE),
-    SKELETON(20, 2, 20, 25, 'M', Color.BLACK, Color.WHITE, "boom.wav", 1, 50, Color.BLUE);
+    ZOMBIE(30, 2, 10, 40, 'M', Color.WHITE, new Color(1, 80, 32), "zombie.wav", 1, 50, Color.BLUE),
+    SKELETON(20, 2, 20, 25, 'M', Color.BLACK, Color.WHITE, "skeleton.wav", 1, 50, Color.BLUE);
 
     private final int health;
     private final int power;
