@@ -24,11 +24,19 @@ public class AudioManager {
     private Random random;
     @Setter
     private Player currentPlayer;
-    private AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);;
+    private AudioFormat format;
+    private DataLine.Info info;
     private TargetDataLine audioLine;
 
     public AudioManager() {
-        random = new Random();
+        try {
+            random = new Random();
+            format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);;
+            info = new DataLine.Info(TargetDataLine.class, format);
+            audioLine = (TargetDataLine) AudioSystem.getLine(info);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateAudio(long tickCount) {
@@ -47,8 +55,13 @@ public class AudioManager {
             Clip clip = creature.getClip();
 
             clip.open(audio);
-            updateAudioPosition(creature);
+            if (creature.equals(currentPlayer)) {
+                FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                gainControl.setValue(gainControl.getMinimum());
+            }
+            else updateAudioPosition(creature);
             clip.start();
+            System.out.println("start playing");
         } catch (Exception e) {
             //TODO
         }
@@ -69,10 +82,8 @@ public class AudioManager {
 
     public void startAudioRecording() {
         try {
-            DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
             if (!AudioSystem.isLineSupported(info)) System.err.println("Line not supported");
 
-            audioLine = (TargetDataLine) AudioSystem.getLine(info);
             audioLine.open();
             audioLine.start();
 
@@ -195,5 +206,9 @@ public class AudioManager {
         System.err.println("No recent recording available.");
         return null;
 
+    }
+
+    public boolean isRecording() {
+        return audioLine.isActive();
     }
 }

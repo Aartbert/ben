@@ -244,12 +244,16 @@ public class UIManager implements ISubmitListener, IKeyStrokeListener, IButtonCl
 
     private Action mapKeyToAction(Key key) {
         if (key == Key.Z) {
-            gameManager.startAudioRecording();
-            System.out.println("start");
+            if (!gameManager.isRecording()) {
+                gameManager.startAudioRecording();
+                System.out.println("start");
+            } else System.out.println("kut");
         }
         if (key == Key.X) {
-            gameManager.stopAudioRecording();
-            System.out.println("stop");
+            if (gameManager.isRecording()) {
+                gameManager.stopAudioRecording();
+                System.out.println("stop");
+            } else System.out.println("kut");
         }
         if (key == Key.P) {
             try {
@@ -268,6 +272,9 @@ public class UIManager implements ISubmitListener, IKeyStrokeListener, IButtonCl
 
             //TODO WHEN NETWORK IS WORKING PULL DEV, REMOVE THE CODE ABOVE AND UNCOMMENT THIS.
 //            gameManager.sendAudioInputStream(gameManager.getMostRecentRecording());
+            //TODO PROBABLY A BETTER SOLUTION, IF THIS WORKS SENDAUDIOINPUTSTREAM METHODS CAN BE REMOVED.
+//            gameManager.playAudio(gameManager.getMostRecentRecording());
+
         }
         return switch (key) {
             case W, ARROW_UP -> Action.MOVE_UP;

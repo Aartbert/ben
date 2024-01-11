@@ -269,7 +269,6 @@ public class GameManager extends GameLoop {
         game.getMonsters().removeIf(monster -> monster.getHealth().getValue().intValue() <= 0);
         game.getPlayers().removeIf(player -> player.getHealth().getValue().intValue() <= 0);
         uiManager.update();
-//        audioManager.updateAudio(tickCount);
         currentPlayer.increaseStamina(1);
 
         if (!nextActions.isEmpty()) {
@@ -279,6 +278,7 @@ public class GameManager extends GameLoop {
         if (tickCount % 10 == 0) {
             uiManager.updatePlayerList(game.getPlayers(), currentPlayer);
         }
+//        audioManager.updateAudio(tickCount);
     }
 
     /**
@@ -825,6 +825,10 @@ public class GameManager extends GameLoop {
                 tickCount);
     }
 
+    public void playAudio(AudioInputStream audioInputStream) {
+        audioManager.playAudioAsCreature(currentPlayer, audioInputStream, tickCount);
+    }
+
     /**
      * This method will check which item the player will use.
      * It checks the players inventory for every item and assigns them to the right
@@ -904,6 +908,10 @@ public class GameManager extends GameLoop {
 
     public void stopAudioRecording() {
         audioManager.stopAudioRecording();
+    }
+
+    public boolean isRecording() {
+        return audioManager.isRecording();
     }
 
     public AudioInputStream getMostRecentRecording() {
