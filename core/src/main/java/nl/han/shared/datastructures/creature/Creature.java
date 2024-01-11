@@ -59,7 +59,6 @@ public abstract class Creature implements ISavable<Creature> {
             clip.addLineListener(event -> {
                 if (event.getType() == LineEvent.Type.STOP) {
                     clip.close();
-                    System.out.println("stop playing");
                     activeAudioPlayback = false;
                 }
             });

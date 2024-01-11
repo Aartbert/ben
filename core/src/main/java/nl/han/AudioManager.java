@@ -61,7 +61,6 @@ public class AudioManager {
             }
             else updateAudioPosition(creature);
             clip.start();
-            System.out.println("start playing");
         } catch (Exception e) {
             //TODO
         }
@@ -147,6 +146,7 @@ public class AudioManager {
             Scanner scanner = new Scanner(System.in);
             clip.start();
             scanner.nextLine();
+
        } catch (Exception e) {
             e.printStackTrace();
         }
@@ -190,13 +190,14 @@ public class AudioManager {
     }
 
     private float calculateAngleToCurrentPlayer(int relativeX, int relativeY) {
-        double angleFromXAxis = Math.atan2(relativeY, relativeX);
-        double angleDegrees = Math.toDegrees(angleFromXAxis);
+        double angleTheta = Math.atan2(relativeY, relativeX);
+        double angleDegrees = Math.toDegrees(angleTheta);
 
         double normalizedAngle = (angleDegrees + 360) % 360;
-        if (normalizedAngle >= 180) normalizedAngle -= 180;
-        if (normalizedAngle > 90) normalizedAngle = 180 - normalizedAngle;
-        return (float) normalizedAngle;
+        float angle = (float) normalizedAngle;
+        if (angle >= 180) angle -= 180;
+        if (angle > 90) angle = 180 - angle;
+        return angle;
     }
 
 

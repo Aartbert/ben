@@ -264,7 +264,9 @@ public class UIManager implements ISubmitListener, IKeyStrokeListener, IButtonCl
                     }
                 });
                 clip.open(gameManager.getMostRecentRecording());
+
                 clip.start();
+
                 System.out.println("play");
             } catch (Exception e) {
                 e.printStackTrace();
