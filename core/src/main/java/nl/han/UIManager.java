@@ -28,6 +28,7 @@ import nl.han.shared.enums.*;
 import java.io.File;
 import java.io.InputStream;
 import java.awt.*;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -246,14 +247,20 @@ public class UIManager implements ISubmitListener, IKeyStrokeListener, IButtonCl
         if (key == Key.Z) {
             if (!gameManager.isRecording()) {
                 gameManager.startAudioRecording();
-                System.out.println("start");
-            } else System.out.println("kut");
+                System.out.println("start recording");
+            } else {
+                gameManager.stopAudioRecording();
+                System.out.println("stop recording");
+            }
         }
         if (key == Key.X) {
-            if (gameManager.isRecording()) {
-                gameManager.stopAudioRecording();
-                System.out.println("stop");
-            } else System.out.println("kut");
+            if (!gameManager.isMicActive()) {
+                gameManager.openMic();
+                System.out.println("mic open");
+            } else {
+                gameManager.closeMic();
+                System.out.println("mic closed");
+            }
         }
         if (key == Key.P) {
             try {
@@ -267,7 +274,7 @@ public class UIManager implements ISubmitListener, IKeyStrokeListener, IButtonCl
 
                 clip.start();
 
-                System.out.println("play");
+                System.out.println("play most recent recording");
             } catch (Exception e) {
                 e.printStackTrace();
             }

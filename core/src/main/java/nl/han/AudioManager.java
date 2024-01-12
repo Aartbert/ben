@@ -1,5 +1,6 @@
 package nl.han;
 
+import lombok.Getter;
 import lombok.Setter;
 import nl.han.shared.datastructures.creature.Bot;
 import nl.han.shared.datastructures.creature.Creature;
@@ -27,6 +28,10 @@ public class AudioManager {
     private AudioFormat format;
     private DataLine.Info info;
     private TargetDataLine audioLine;
+    private DataLine.Info sourceInfo;
+    private SourceDataLine sourceLine;
+    @Getter
+    private boolean micActive = false;
 
     public AudioManager() {
         try {
@@ -34,6 +39,8 @@ public class AudioManager {
             format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);;
             info = new DataLine.Info(TargetDataLine.class, format);
             audioLine = (TargetDataLine) AudioSystem.getLine(info);
+            sourceInfo = new DataLine.Info(SourceDataLine.class, format);
+            sourceLine = (SourceDataLine) AudioSystem.getLine(sourceInfo);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,7 +69,7 @@ public class AudioManager {
             else updateAudioPosition(creature);
             clip.start();
         } catch (Exception e) {
-            //TODO
+            e.printStackTrace();
         }
     }
 
@@ -75,7 +82,7 @@ public class AudioManager {
                 playAudioAsCreature(monster, audioInputStream, tickCount);
             }
         } catch (Exception e) {
-            //TODO
+            e.printStackTrace();
         }
     }
 
@@ -86,10 +93,11 @@ public class AudioManager {
             audioLine.open();
             audioLine.start();
 
+            AudioInputStream audioInputStream = new AudioInputStream(audioLine);
+            File audioFile = new File("record.wav");
+
             Thread thread = new Thread(() -> {
                 try {
-                    AudioInputStream audioInputStream = new AudioInputStream(audioLine);
-                    File audioFile = new File("record.wav");
                     AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, audioFile);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -107,8 +115,73 @@ public class AudioManager {
         audioLine.close();
     }
 
+    public void openMic() {
+        try {
+            audioLine.open(format);
+            micActive = true;
+            sourceLine.open(format);
+
+            audioLine.start();
+            sourceLine.start();
+
+            Thread thread = new Thread(() -> {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+
+                while (micActive) {
+                    bytesRead = audioLine.read(buffer, 0, buffer.length);
+                    sourceLine.write(buffer, 0, bytesRead);
+                }
+            });
+
+            thread.start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void closeMic() {
+        audioLine.stop();
+        micActive = false;
+        audioLine.close();
+        sourceLine.stop();
+        sourceLine.close();
+    }
 
     public static void main(String[] args) {
+        try {
+            AudioFormat audioFormat = new AudioFormat(44100, 16, 2, true, true);
+            DataLine.Info targetInfo = new DataLine.Info(TargetDataLine.class, audioFormat);
+            TargetDataLine targetLine = (TargetDataLine) AudioSystem.getLine(targetInfo);
+
+            DataLine.Info sourceInfo = new DataLine.Info(SourceDataLine.class, audioFormat);
+            SourceDataLine sourceLine = (SourceDataLine) AudioSystem.getLine(sourceInfo);
+
+            targetLine.open(audioFormat);
+            sourceLine.open(audioFormat);
+
+            targetLine.start();
+            sourceLine.start();
+
+            Thread thread = new Thread(() -> {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+
+                while (true) {
+                    bytesRead = targetLine.read(buffer, 0, buffer.length);
+                    sourceLine.write(buffer, 0, bytesRead);
+                }
+            });
+
+            thread.start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main2(String[] args) {
         try {
             AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100, 16, 2, 4, 44100, false);
             DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);

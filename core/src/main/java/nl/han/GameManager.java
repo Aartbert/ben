@@ -910,8 +910,20 @@ public class GameManager extends GameLoop {
         audioManager.stopAudioRecording();
     }
 
+    public void openMic() {
+        audioManager.openMic();
+    }
+
+    public void closeMic() {
+        audioManager.closeMic();
+    }
+
     public boolean isRecording() {
         return audioManager.isRecording();
+    }
+
+    public boolean isMicActive() {
+        return audioManager.isMicActive();
     }
 
     public AudioInputStream getMostRecentRecording() {
